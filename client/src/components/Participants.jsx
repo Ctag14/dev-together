@@ -12,7 +12,7 @@ const Participants = ({people,roomId, displayName,handleLangChange,language}) =>
         <div className="part">
             <div className='part__invite'>
                 <div className="part__inviteHeader">Invite Code:</div>
-                <div className="part__inviteCode">{`http://localhost:3000/${roomId}`}</div>
+                <div className="part__inviteCode">{`https://ctag14.github.io/dev-together/${roomId}`}</div>
             </div>
             <div className="part__members">
                 Connected:
