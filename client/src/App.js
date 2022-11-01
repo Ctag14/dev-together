@@ -70,7 +70,7 @@ function App() {
       if (window.location.href === "https://ctag14.github.io/dev-together/") {
         room.current.id = uuidv4();
       } else {
-        room.current.id = window.location.href.slice(22);
+        room.current.id = window.location.href.slice(37);
       }
       function joinRoom() {
         socket.emit("join", displayName, room.current.id);
