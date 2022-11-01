@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from "uuid";
 import Editor from "./components/Editor";
 import Participants from "./components/Participants";
 
-const socket = io("https://dev-together.vercel.app/");
+const socket = io("https://dev-together.adaptable.app/");
 
 function App() {
   const [displayName, setDisplayName] = useState("");
@@ -67,7 +67,7 @@ function App() {
   function handleJoin() {
     if (displayName === "") alert("Please enter your Name");
     else {
-      if (window.location.href === "http://localhost:3000/") {
+      if (window.location.href === "https://ctag14.github.io/dev-together/") {
         room.current.id = uuidv4();
       } else {
         room.current.id = window.location.href.slice(22);
