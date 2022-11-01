@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from "uuid";
 import Editor from "./components/Editor";
 import Participants from "./components/Participants";
 
-const socket = io("https://dev-together.vercel.app/server/index.js");
+const socket = io("https://dev-together.vercel.app/");
 
 function App() {
   const [displayName, setDisplayName] = useState("");
