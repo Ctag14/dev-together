@@ -106,7 +106,11 @@ io.on("connection", (socket) => {
         ":" +
         new Date(Date.now()).getMinutes(),
     };
-    const listConnected = connectedUsers(manifest[roomId]);
-    socket.broadcast.to(roomId).emit("user_left", listConnected, leaveMessage);
+    if (manifest[roomId] !== undefined) {
+      const listConnected = connectedUsers(manifest[roomId]);
+      socket.broadcast
+        .to(roomId)
+        .emit("user_left", listConnected, leaveMessage);
+    }
   });
 });
