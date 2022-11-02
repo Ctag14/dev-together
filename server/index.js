@@ -80,13 +80,13 @@ io.on("connection", (socket) => {
         const curUser = manifest[room][i];
         if (manifest[room].length === 0) {
           delete manifest.room;
-          break;
-        }
-        if (curUser.id === targetId) {
-          user = curUser.displayName;
-          roomId = room;
-          manifest[room].splice(i, 1);
-          break;
+        } else {
+          if (curUser.id === targetId) {
+            user = curUser.displayName;
+            roomId = room;
+            manifest[room].splice(i, 1);
+            break;
+          }
         }
       }
     }

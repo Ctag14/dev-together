@@ -63,15 +63,16 @@ function App() {
       socket.off("user_left");
     };
   }, [socket]);
-
+  function setRoomID(value) {
+    room.current.id = value;
+  }
   function handleJoin() {
     if (displayName === "") alert("Please enter your Name");
     else {
-      if (window.location.href === "https://ctag14.github.io/dev-together/") {
+      if (room.current.id === "") {
         room.current.id = uuidv4();
-      } else {
-        room.current.id = window.location.href.slice(37);
       }
+
       function joinRoom() {
         socket.emit("join", displayName, room.current.id);
         setNameProvided(true);
@@ -119,6 +120,7 @@ function App() {
           setDisplayName={setDisplayName}
           handleJoin={handleJoin}
           roomId={room.current.id}
+          setRoomID={setRoomID}
         />
       ) : (
         <>

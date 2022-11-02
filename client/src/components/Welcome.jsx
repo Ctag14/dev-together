@@ -1,7 +1,7 @@
 import React from "react";
 
 
-function Welcome({setDisplayName,handleJoin}) {
+function Welcome({setDisplayName,handleJoin,setRoomID}) {
     return (
         <div className="welcome__container">
             <div className="welcome__title">Dev - Together</div>
@@ -14,6 +14,15 @@ function Welcome({setDisplayName,handleJoin}) {
                     placeholder="What should we call you?"
                     required 
                     onChange={(e)=>{setDisplayName(e.target.value)}}
+                />
+                                
+                <input
+                    autoComplete="off" 
+                    className="welcome__RoomID"
+                    name="inviteCode" 
+                    type="text" 
+                    placeholder="Join an existing Room" 
+                    onChange={(e)=>{setRoomID(e.target.value)}}
                 />
                 <button 
                     className="welcome__formButton"

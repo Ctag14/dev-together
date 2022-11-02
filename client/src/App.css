@@ -23,7 +23,7 @@ body{
   flex-direction: column;
   align-items: center;
   gap: 25%;
-  height: 30vh;
+  height: 40vh;
   width:60vw;
   background-color: #0078d7;
   border: azure 1px solid;
@@ -55,22 +55,17 @@ body{
   color: azure;
 
 }
-.welcome__RoomCreate{
-  text-align: center;
-  height: 20px;
-  background-color:white;
-  border: azure solid 1px;
-  font-size: 16px;
-  color: black;
-
+.welcome__NameInput::placeholder{
+  color: white;
 }
-.welcome__RoomJoin{
+.welcome__RoomID{
   text-align: center;
   height: 20px;
   background-color:white;
   border: azure solid 1px;
   font-size: 16px;
   color: black;
+  border-radius: 5px;
 
 }
 :focus{
