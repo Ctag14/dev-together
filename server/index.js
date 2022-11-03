@@ -62,26 +62,25 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    const targetId = socket.id;
-    let userInfo = findUser(targetId);
-    if (userInfo !== undefined) {
-      const leaveMessage = {
-        user: "server",
-        content: `${userInfo["displayName"]} has left the chat`,
-        time:
-          new Date(Date.now()).getHours() +
-          ":" +
-          new Date(Date.now()).getMinutes(),
-      };
-
-      let roomSet = io.sockets.adapter.rooms.get(userInfo.room);
-      console.log(io.sockets.adapter.rooms);
-      console.log(userInfo);
-      let targetRoom = Array.from(roomSet);
-      const listConnected = connectedUsers(targetRoom);
-      socket.broadcast
-        .to(userInfo["room"])
-        .emit("user_left", listConnected, leaveMessage);
-    }
+    // const targetId = socket.id;
+    // let userInfo = findUser(targetId);
+    // if (userInfo !== undefined) {
+    //   const leaveMessage = {
+    //     user: "server",
+    //     content: `${userInfo["displayName"]} has left the chat`,
+    //     time:
+    //       new Date(Date.now()).getHours() +
+    //       ":" +
+    //       new Date(Date.now()).getMinutes(),
+    //   };
+    //   let roomSet = io.sockets.adapter.rooms.get(userInfo.room);
+    //   console.log(io.sockets.adapter.rooms);
+    //   console.log(userInfo);
+    //   let targetRoom = Array.from(roomSet);
+    //   const listConnected = connectedUsers(targetRoom);
+    //   socket.broadcast
+    //     .to(userInfo["room"])
+    //     .emit("user_left", listConnected, leaveMessage);
+    // }
   });
 });
