@@ -95,16 +95,16 @@ io.on("connection", (socket) => {
 
     const leaveMessage = {
       user: "server",
-      content: `${userInfo[user]} has left the chat`,
+      content: `${userInfo["user"]} has left the chat`,
       time:
         new Date(Date.now()).getHours() +
         ":" +
         new Date(Date.now()).getMinutes(),
     };
-    if (manifest[userInfo[roomId]] !== undefined) {
-      const listConnected = connectedUsers(manifest[userInfo[roomId]]);
+    if (manifest[userInfo["roomId"]] !== undefined) {
+      const listConnected = connectedUsers(manifest[userInfo["roomId"]]);
       socket.broadcast
-        .to(userInfo[roomId])
+        .to(userInfo["roomId"])
         .emit("user_left", listConnected, leaveMessage);
     }
   });
