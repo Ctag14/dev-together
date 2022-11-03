@@ -50,7 +50,8 @@ io.on("connection", (socket) => {
         new Date(Date.now()).getMinutes(),
     };
     socket.broadcast.to(roomId).emit("user_joined", joinedMessage);
-    let roomSet = socket.rooms.get(roomId);
+    let roomSet = io.sockets.adapter.rooms.get(roomId);
+    console.log(io.sockets.adapter.rooms.get(roomId));
     let targetRoom = Array.from(roomSet);
     const listConnected = connectedUsers(targetRoom);
     io.in(roomId).emit("update_connected", listConnected);
