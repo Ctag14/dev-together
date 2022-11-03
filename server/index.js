@@ -26,8 +26,8 @@ function connectedUsers(room) {
 }
 function findUser(targetId) {
   for (let room in manifest) {
-    for (let j = 0; j < room.length; j++) {
-      const curUser = manifest[room][j];
+    for (let i = 0; i < room.length; i++) {
+      const curUser = manifest[room][i];
       if (curUser.id === targetId) {
         let userInfo = {
           user: curUser.displayName,
