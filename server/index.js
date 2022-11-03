@@ -17,6 +17,32 @@ server.listen(PORT, () => {
 });
 
 const manifest = {};
+function connectedUsers(room) {
+  var arr = [];
+  for (let user of room) {
+    arr.push(user.displayName);
+  }
+  return arr;
+}
+function findUser(targetId) {
+  for (let room in manifest) {
+    for (let j = 0; j < room.length; j++) {
+      const curUser = manifest[room][j];
+      if (curUser.id === targetId) {
+        let userInfo = {
+          user: curUser.displayName,
+          roomId: room,
+        };
+        manifest[room].splice(i, 1);
+        if (manifest[room].length < 1) {
+          delete manifest[room];
+          return userInfo;
+        }
+      }
+    }
+  }
+}
+
 io.on("connection", (socket) => {
   socket.on("join", (user, roomId) => {
     const userSocketID = socket.id;
@@ -39,14 +65,6 @@ io.on("connection", (socket) => {
         new Date(Date.now()).getMinutes(),
     };
     socket.broadcast.to(roomId).emit("user_joined", joinedMessage);
-
-    function connectedUsers(room) {
-      var arr = [];
-      for (let user of room) {
-        arr.push(user.displayName);
-      }
-      return arr;
-    }
     const listConnected = connectedUsers(manifest[roomId]);
     io.in(roomId).emit("update_connected", listConnected);
   });
@@ -73,43 +91,20 @@ io.on("connection", (socket) => {
   });
   socket.on("disconnect", () => {
     const targetId = socket.id;
-    let user = "";
-    let roomId = "";
-    for (let room in manifest) {
-      for (let i = 0; i < room.length; i++) {
-        const curUser = manifest[room][i];
-        if (manifest[room].length === 0) {
-          delete manifest.room;
-        } else {
-          if (curUser.id === targetId) {
-            user = curUser.displayName;
-            roomId = room;
-            manifest[room].splice(i, 1);
-            break;
-          }
-        }
-      }
-    }
+    let userInfo = findUser(targetId);
 
-    function connectedUsers(room) {
-      var arr = [];
-      for (let user of room) {
-        arr.push(user.displayName);
-      }
-      return arr;
-    }
     const leaveMessage = {
       user: "server",
-      content: `${user} has left the chat`,
+      content: `${userInfo[user]} has left the chat`,
       time:
         new Date(Date.now()).getHours() +
         ":" +
         new Date(Date.now()).getMinutes(),
     };
-    if (manifest[roomId] !== undefined) {
-      const listConnected = connectedUsers(manifest[roomId]);
+    if (manifest[userInfo[roomId]] !== undefined) {
+      const listConnected = connectedUsers(manifest[userInfo[roomId]]);
       socket.broadcast
-        .to(roomId)
+        .to(userInfo[roomId])
         .emit("user_left", listConnected, leaveMessage);
     }
   });
