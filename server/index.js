@@ -93,7 +93,8 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     const targetId = socket.id;
     let userInfo = findUser(targetId);
-
+    console.log(userInfo);
+    if (userInfo === undefined) return;
     const leaveMessage = {
       user: "server",
       content: `${userInfo["user"]} has left the chat`,
