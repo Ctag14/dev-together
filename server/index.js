@@ -28,6 +28,7 @@ function findUser(targetId) {
   for (let room in manifest) {
     for (let i = 0; i < room.length; i++) {
       const curUser = manifest[room][i];
+      if (curUser === undefined) continue;
       if (curUser.id === targetId) {
         let userInfo = {
           user: curUser.displayName,
