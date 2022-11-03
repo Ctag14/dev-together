@@ -31,11 +31,14 @@ function findUser(targetId) {
 
 io.on("connection", (socket) => {
   socket.on("join", (user, roomId) => {
+    console.log(user, roomId);
+
     const userSocketID = socket.id;
     manifest[userSocketID] = {
       displayName: user,
       room: roomId,
     };
+    console.log(manifest);
     socket.join(roomId);
     const joinedMessage = {
       user: "server",
@@ -47,6 +50,7 @@ io.on("connection", (socket) => {
     };
     socket.broadcast.to(roomId).emit("user_joined", joinedMessage);
     let roomSet = io.sockets.adapter.rooms.get(roomId);
+    console.log(io.sockets.adapter.rooms.get(roomId));
     let targetRoom = Array.from(roomSet);
     const listConnected = connectedUsers(targetRoom);
     io.in(roomId).emit("update_connected", listConnected);
