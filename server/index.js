@@ -25,37 +25,16 @@ function connectedUsers(room) {
   return arr;
 }
 function findUser(targetId) {
-  for (let room in manifest) {
-    for (let i = 0; i < room.length; i++) {
-      const curUser = manifest[room][i];
-      if (curUser === undefined) continue;
-      if (curUser.id === targetId) {
-        let userInfo = {
-          user: curUser.displayName,
-          roomId: room,
-        };
-        manifest[room].splice(i, 1);
-        if (manifest[room].length < 1) {
-          delete manifest[room];
-          return userInfo;
-        }
-      }
-    }
-  }
+  return manifest[targetId];
 }
 
 io.on("connection", (socket) => {
   socket.on("join", (user, roomId) => {
     const userSocketID = socket.id;
-    if (!(roomId in manifest)) {
-      manifest[roomId] = [];
-    }
-    manifest[roomId].push({
+    manifest[userSocketID] = {
       displayName: user,
-      position: {},
-      id: userSocketID,
-    });
-
+      room: roomId,
+    };
     socket.join(roomId);
     const joinedMessage = {
       user: "server",
@@ -66,25 +45,14 @@ io.on("connection", (socket) => {
         new Date(Date.now()).getMinutes(),
     };
     socket.broadcast.to(roomId).emit("user_joined", joinedMessage);
-    const listConnected = connectedUsers(manifest[roomId]);
+    let targetRoom = io.sockets.adapter.rooms(roomId).sockets;
+    const listConnected = connectedUsers(targetRoom);
     io.in(roomId).emit("update_connected", listConnected);
   });
   socket.on("send_message", (sentMessage, roomId) => {
     socket.broadcast.to(roomId).emit("recieve_message", sentMessage);
   });
   socket.on("send_code", (value, roomId) => {
-    // function updateManifest(room) {
-    //   const name = userPos.user;
-    //   for (let user of room) {
-    //     if (user.displayName === name) {
-    //       user.position = userPos.position;
-    //     }
-    //   }
-    // }
-    // updateManifest(manifest[roomId]);
-    // const listPositions = manifest[roomId];
-    // console.log(listPositions);
-    // socket.broadcast.to(roomId).emit("update_positions", listPositions);
     socket.broadcast.to(roomId).emit("broadcast_code", value);
   });
   socket.on("change_language", (lang, roomId) => {
@@ -93,20 +61,19 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     const targetId = socket.id;
     let userInfo = findUser(targetId);
-    console.log(userInfo);
-    if (userInfo === undefined) return;
-    const leaveMessage = {
-      user: "server",
-      content: `${userInfo["user"]} has left the chat`,
-      time:
-        new Date(Date.now()).getHours() +
-        ":" +
-        new Date(Date.now()).getMinutes(),
-    };
-    if (manifest[userInfo["roomId"]] !== undefined) {
-      const listConnected = connectedUsers(manifest[userInfo["roomId"]]);
+    if (userInfo !== undefined) {
+      const leaveMessage = {
+        user: "server",
+        content: `${userInfo["displayName"]} has left the chat`,
+        time:
+          new Date(Date.now()).getHours() +
+          ":" +
+          new Date(Date.now()).getMinutes(),
+      };
+      let targetRoom = io.sockets.adapter.rooms(roomId).sockets;
+      const listConnected = connectedUsers(targetRoom);
       socket.broadcast
-        .to(userInfo["roomId"])
+        .to(userInfo["room"])
         .emit("user_left", listConnected, leaveMessage);
     }
   });
