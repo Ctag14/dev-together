@@ -75,6 +75,8 @@ io.on("connection", (socket) => {
       };
 
       let roomSet = io.sockets.adapter.rooms.get(userInfo.room);
+      console.log(io.sockets.adapter.rooms);
+      console.log(userInfo);
       let targetRoom = Array.from(roomSet);
       const listConnected = connectedUsers(targetRoom);
       socket.broadcast
