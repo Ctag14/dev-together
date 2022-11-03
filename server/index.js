@@ -20,7 +20,8 @@ const manifest = {};
 function connectedUsers(room) {
   var arr = [];
   for (let user of room) {
-    arr.push(user.displayName);
+    let dis = manifest[user].displayName;
+    arr.push(dis);
   }
   return arr;
 }
