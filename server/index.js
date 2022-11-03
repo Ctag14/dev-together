@@ -58,6 +58,7 @@ io.on("connection", (socket) => {
   socket.on("change_language", (lang, roomId) => {
     socket.broadcast.to(roomId).emit("language_change", lang);
   });
+
   socket.on("disconnect", () => {
     const targetId = socket.id;
     let userInfo = findUser(targetId);
