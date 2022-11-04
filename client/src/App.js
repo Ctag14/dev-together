@@ -56,6 +56,8 @@ function App() {
     });
     socket.io.on("reconnect", (attempt) => {
       console.log(attempt);
+      console.log(displayName);
+      console.log(room.current.id);
       socket.emit("rejoin", displayName, room.current.id);
     });
     return () => {

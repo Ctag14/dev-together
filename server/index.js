@@ -19,6 +19,7 @@ server.listen(PORT, () => {
 
 const manifest = {};
 function removeUser(name, room) {
+  if (manifest[room] === undefined) return;
   let arr = manifest[room];
   let newArr = arr.filter((item) => item !== name);
   manifest[room] = newArr;
