@@ -9,7 +9,6 @@ import Editor from "./components/Editor";
 import Participants from "./components/Participants";
 
 const socket = io("https://dev-together.adaptable.app/");
-
 function App() {
   const [displayName, setDisplayName] = useState("");
   const [nameProvided, setNameProvided] = useState(false);
@@ -36,6 +35,7 @@ function App() {
       setCode(value);
     });
     socket.on("update_connected", (listConnected) => {
+      console.log(listConnected);
       setPeople(listConnected);
     });
     socket.on("update_positions", (listPositions) => {
@@ -53,6 +53,10 @@ function App() {
     socket.on("user_left", (listConnected, leaveMessage) => {
       setPeople(listConnected);
       setMessages((list) => [leaveMessage, ...list]);
+    });
+    socket.io.on("reconnect", (attempt) => {
+      console.log(attempt);
+      socket.emit("rejoin", displayName, room.current.id);
     });
     return () => {
       socket.off("recieve_message");
