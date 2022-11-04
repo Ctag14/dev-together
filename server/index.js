@@ -77,16 +77,16 @@ io.on("connection", (socket) => {
         ":" +
         new Date(Date.now()).getMinutes(),
     };
-
-    removeUser(displayName, roomId);
-    if (manifest[roomId].length > 0) {
-      const listConnected = manifest[roomId];
-      socket.broadcast
-        .to(roomId)
-        .emit("user_left", listConnected, leaveMessage);
-    } else {
-      delete manifest[roomId];
-      console.log(manifest);
+    if (manifest[roomId] !== undefined) {
+      removeUser(displayName, roomId);
+      if (manifest[roomId].length > 0) {
+        const listConnected = manifest[roomId];
+        socket.broadcast
+          .to(roomId)
+          .emit("user_left", listConnected, leaveMessage);
+      } else {
+        delete manifest[roomId];
+      }
     }
   });
 });
