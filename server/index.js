@@ -66,7 +66,8 @@ io.on("connection", (socket) => {
   socket.on("change_language", (lang, roomId) => {
     socket.broadcast.to(roomId).emit("language_change", lang);
   });
-  socket.on("disconnect", () => {
+  socket.on("disconnect", (reason) => {
+    console.log(reason);
     let displayName = socket.username;
     let roomId = socket.room;
     const leaveMessage = {
