@@ -10,20 +10,15 @@ import Participants from "./components/Participants";
 
 const socket = io("https://dev-together.adaptable.app/");
 function App() {
-  const [displayName, setDisplayName] = useState("");
   const [nameProvided, setNameProvided] = useState(false);
   const [messages, setMessages] = useState([]);
   const [code, setCode] = useState("");
   const [people, setPeople] = useState([]);
-  const [positions, setPositions] = useState([]);
   const [language, setLanguage] = useState("javascript");
   const room = useRef({
     id: "",
   });
-  const myPos = useRef({
-    user: displayName,
-    position: { top: 0, left: 0 },
-  });
+  const displayName = useRef("");
 
   useEffect(() => {
     socket.on("recieve_message", (sentMessage) => {
@@ -38,14 +33,6 @@ function App() {
       console.log(listConnected);
       setPeople(listConnected);
     });
-    socket.on("update_positions", (listPositions) => {
-      console.log();
-      const filtered = listPositions.filter(
-        (item) => item.displayName !== displayName
-      );
-
-      setPositions(filtered);
-    });
     socket.on("language_change", (lang) => {
       setLanguage(lang);
       console.log(language);
@@ -56,9 +43,9 @@ function App() {
     });
     socket.io.on("reconnect", (attempt) => {
       console.log(attempt);
-      console.log(displayName);
+      console.log(displayName.current);
       console.log(room.current.id);
-      socket.emit("rejoin", displayName, room.current.id);
+      socket.emit("rejoin", displayName.current, room.current.id);
     });
     return () => {
       socket.off("recieve_message");
@@ -72,20 +59,23 @@ function App() {
   function setRoomID(value) {
     room.current.id = value;
   }
+  function setDisplayName(value) {
+    displayName.current = value;
+  }
   function handleJoin() {
-    if (displayName === "") alert("Please enter your Name");
+    if (displayName.current === "") alert("Please enter your Name");
     else {
       if (room.current.id === "") {
         room.current.id = uuidv4();
       }
 
       function joinRoom() {
-        socket.emit("join", displayName, room.current.id);
+        socket.emit("join", displayName.current, room.current.id);
         setNameProvided(true);
         setMessages([
           {
             user: "server",
-            content: `Welcome ${displayName}`,
+            content: `Welcome ${displayName.current}`,
             time:
               new Date(Date.now()).getHours() +
               ":" +
@@ -102,7 +92,7 @@ function App() {
 
   async function sendMessage(msgContent) {
     const sentMessage = {
-      user: displayName,
+      user: displayName.current,
       content: msgContent,
       time:
         new Date(Date.now()).getHours() +
@@ -130,61 +120,22 @@ function App() {
         />
       ) : (
         <>
-          <p
-            className="userPos"
-            style={{
-              position: "fixed",
-              top: myPos.current.position.top,
-              left: myPos.current.position.left,
-              backgroundColor: "#7600bc",
-              maxheight: "100%",
-              maxWidth: "100%",
-              zIndex: 100,
-            }}
-          >
-            {myPos.current.user}
-          </p>
-
-          {positions.map((item, index) => {
-            if (
-              item.position.left != "24px" &&
-              item.displayName != displayName
-            ) {
-              return (
-                <p
-                  key={index}
-                  className="userPos"
-                  style={{
-                    position: "fixed",
-                    top: item.position.top,
-                    left: item.position.left,
-                    backgroundColor: "#7600bc",
-                    maxheight: "100%",
-                    maxWidth: "100%",
-                    zIndex: 100,
-                  }}
-                >
-                  {item.displayName}
-                </p>
-              );
-            }
-          })}
           <Editor
             updateCode={updateCode}
             code={code}
             setCode={setCode}
-            displayName={displayName}
+            displayName={displayName.current}
             language={language}
           />
           <Chat
             messages={messages}
             sendMessage={sendMessage}
-            displayName={displayName}
+            displayName={displayName.current}
             roomId={room.current.id}
           />
           <Participants
             people={people}
-            displayName={displayName}
+            displayName={displayName.current}
             roomId={room.current.id}
             handleLangChange={handleLangChange}
             language={language}
