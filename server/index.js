@@ -86,6 +86,7 @@ io.on("connection", (socket) => {
         .emit("user_left", listConnected, leaveMessage);
     } else {
       delete manifest[roomId];
+      console.log(manifest);
     }
   });
 });
