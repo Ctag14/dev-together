@@ -94,6 +94,8 @@ io.on("connection", (socket) => {
         }
       }
     }
-    setTimeout(checkReconnect(displayName, roomId), 11000);
+    setTimeout(() => {
+      checkReconnect(displayName, roomId);
+    }, 11000);
   });
 });
