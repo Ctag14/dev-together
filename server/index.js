@@ -24,6 +24,20 @@ function removeUser(name, room) {
   let newArr = arr.filter((item) => item !== name);
   manifest[room] = newArr;
 }
+function checkReconnect(displayName, roomId, socket, leaveMessage) {
+  if (Array.from(socket.rooms()).includes(socket.id)) return;
+  else {
+    if (manifest[roomId] !== undefined) removeUser(displayName, roomId);
+    if (manifest[roomId].length > 0) {
+      const listConnected = manifest[roomId];
+      socket.broadcast
+        .to(roomId)
+        .emit("user_left", listConnected, leaveMessage);
+    } else {
+      delete manifest[roomId];
+    }
+  }
+}
 
 io.on("connection", (socket) => {
   socket.on("join", (user, roomId) => {
@@ -50,12 +64,6 @@ io.on("connection", (socket) => {
     socket.join(roomId);
     socket.username = displayName;
     socket.room = roomId;
-    if (manifest[roomId] === undefined) {
-      manifest[roomId] = [];
-    }
-    manifest[roomId].push(displayName);
-    let listConnected = manifest[roomId];
-    io.in(roomId).emit("update_connected", listConnected);
   });
   socket.on("send_message", (sentMessage, roomId) => {
     socket.broadcast.to(roomId).emit("recieve_message", sentMessage);
@@ -78,23 +86,8 @@ io.on("connection", (socket) => {
         ":" +
         new Date(Date.now()).getMinutes(),
     };
-    if (manifest[roomId] !== undefined) removeUser(displayName, roomId);
-
-    function checkReconnect(displayName, roomId) {
-      if (manifest[roomId].includes(displayName)) return;
-      else {
-        if (manifest[roomId].length > 0) {
-          const listConnected = manifest[roomId];
-          socket.broadcast
-            .to(roomId)
-            .emit("user_left", listConnected, leaveMessage);
-        } else {
-          delete manifest[roomId];
-        }
-      }
-    }
     setTimeout(() => {
-      checkReconnect(displayName, roomId);
+      checkReconnect(displayName, roomId, socket, leaveMessage);
     }, 11000);
   });
 });
