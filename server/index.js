@@ -25,7 +25,7 @@ function removeUser(name, room) {
   manifest[room] = newArr;
 }
 function checkReconnect(displayName, roomId, socket, leaveMessage) {
-  if (Array.from(socket.rooms()).includes(socket.id)) return;
+  if (Array.from(socket.rooms).includes(socket.id)) return;
   else {
     if (manifest[roomId] !== undefined) removeUser(displayName, roomId);
     if (manifest[roomId].length > 0) {
