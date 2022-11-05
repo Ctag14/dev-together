@@ -78,16 +78,22 @@ io.on("connection", (socket) => {
         ":" +
         new Date(Date.now()).getMinutes(),
     };
-    if (manifest[roomId] !== undefined) {
-      removeUser(displayName, roomId);
-      if (manifest[roomId].length > 0) {
-        const listConnected = manifest[roomId];
-        socket.broadcast
-          .to(roomId)
-          .emit("user_left", listConnected, leaveMessage);
-      } else {
-        delete manifest[roomId];
+    function checkReconnect(displayName, roomId) {
+      if (manifest[roomId].includes(displayName)) return;
+      else {
+        if (manifest[roomId] !== undefined) {
+          removeUser(displayName, roomId);
+          if (manifest[roomId].length > 0) {
+            const listConnected = manifest[roomId];
+            socket.broadcast
+              .to(roomId)
+              .emit("user_left", listConnected, leaveMessage);
+          } else {
+            delete manifest[roomId];
+          }
+        }
       }
     }
+    setTimeout(checkReconnect(displayName, roomId), 11000);
   });
 });
