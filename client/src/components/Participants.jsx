@@ -16,11 +16,11 @@ const Participants = ({people,roomId, displayName,handleLangChange,language}) =>
             </div>
             <div className="part__members">
                 Connected:
-                {people.map(item=>{
+                {people.map((item,index)=>{
                     return(
-                        <div className="part__user"key={item}>
+                        <div className="part__user"key={index}>
                             <p className="circle"></p>
-                            <p>{item}</p>
+                            <p>{item.displayName}</p>
                         </div>
                     )
                 })

@@ -3,7 +3,6 @@ const app = express();
 const http = require("http");
 const cors = require("cors");
 const { Server } = require("socket.io");
-const { Console } = require("console");
 const server = http.createServer(app);
 app.use(cors());
 const io = new Server(server, {
@@ -18,24 +17,35 @@ server.listen(PORT, () => {
 });
 
 const manifest = {};
-function removeUser(name, room) {
-  if (manifest[room] === undefined) return;
-  let arr = manifest[room];
-  let newArr = arr.filter((item) => item !== name);
-  manifest[room] = newArr;
-}
-function checkReconnect(displayName, roomId, socket, leaveMessage) {
-  if (socket.rooms.has(roomId)) return;
-  else {
-    if (manifest[roomId] !== undefined) removeUser(displayName, roomId);
-    if (manifest[roomId].length > 0) {
-      const listConnected = manifest[roomId];
-      socket.broadcast
-        .to(roomId)
-        .emit("user_left", listConnected, leaveMessage);
-    } else {
-      delete manifest[roomId];
+function findUser(displayName, roomId) {
+  for (let i = 0; i < manifest[roomId].length; i++) {
+    let user = manifest[roomId][i];
+    if (user.displayName === displayName) {
+      return i;
     }
+  }
+}
+function checkReconnect(displayName, roomId, socket) {
+  if (manifest[roomId] === undefined) return;
+
+  let index = findUser(displayName, roomId);
+
+  if (manifest[roomId][index].disconnected === false) return;
+
+  manifest[roomId].splice(index, 1);
+  if (manifest[roomId].length > 0) {
+    const listConnected = manifest[roomId];
+    const leaveMessage = {
+      user: "server",
+      content: `${displayName} has left the chat`,
+      time:
+        new Date(Date.now()).getHours() +
+        ":" +
+        new Date(Date.now()).getMinutes(),
+    };
+    socket.broadcast.to(roomId).emit("user_left", listConnected, leaveMessage);
+  } else {
+    delete manifest[roomId];
   }
 }
 
@@ -47,7 +57,10 @@ io.on("connection", (socket) => {
     if (manifest[roomId] === undefined) {
       manifest[roomId] = [];
     }
-    manifest[roomId].push(user);
+    manifest[roomId].push({
+      displayName: user,
+      disconnected: false,
+    });
     const joinedMessage = {
       user: "server",
       content: `${user} joined the chat`,
@@ -64,6 +77,8 @@ io.on("connection", (socket) => {
     socket.join(roomId);
     socket.username = displayName;
     socket.room = roomId;
+    let index = findUser(displayName, roomId);
+    manifest[roomId][index].disconnected = false;
   });
   socket.on("send_message", (sentMessage, roomId) => {
     socket.broadcast.to(roomId).emit("recieve_message", sentMessage);
@@ -78,16 +93,11 @@ io.on("connection", (socket) => {
     console.log(reason);
     let displayName = socket.username;
     let roomId = socket.room;
-    const leaveMessage = {
-      user: "server",
-      content: `${displayName} has left the chat`,
-      time:
-        new Date(Date.now()).getHours() +
-        ":" +
-        new Date(Date.now()).getMinutes(),
-    };
+    let index = findUser(displayName, roomId);
+    manifest[roomId][index].disconnected = true;
+
     setTimeout(() => {
-      checkReconnect(displayName, roomId, socket, leaveMessage);
+      checkReconnect(displayName, roomId, socket);
     }, 11000);
   });
 });
