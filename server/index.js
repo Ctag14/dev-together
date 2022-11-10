@@ -77,13 +77,13 @@ io.on("connection", (socket) => {
   socket.on("rejoin", (displayName, roomId) => {
     if (roomId === "" || displayName === "") return;
     console.log(displayName + " rejoining " + roomId);
-
     socket.join(roomId);
     socket.username = displayName;
     socket.room = roomId;
-    console.log(displayName + " rejoined");
     let index = findUser(displayName, roomId);
+    if (manifest[roomId] === undefined || index === undefined) return;
     manifest[roomId][index].disconnected = false;
+    console.log(displayName + " rejoined");
   });
   socket.on("send_message", (sentMessage, roomId) => {
     socket.broadcast.to(roomId).emit("recieve_message", sentMessage);
