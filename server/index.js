@@ -29,6 +29,10 @@ function findUser(displayName, roomId) {
   }
 }
 function checkReconnect(displayName, roomId, socket, index) {
+  if (displayName === undefined) console.log(displayName + " is undefined");
+  if (roomId === undefined) console.log(roomId + " is undefined");
+  if (socket === undefined) console.log(socket + " is undefined");
+  if (index === undefined) console.log(index + " is undefined");
   if (manifest[roomId] === undefined || index === undefined) return;
   if (manifest[roomId][index].disconnected === false) return;
 
@@ -101,12 +105,6 @@ io.on("connection", (socket) => {
       manifest[roomId][index].disconnected = true;
       console.log(displayName + " disconnected");
       setTimeout(() => {
-        if (displayName === undefined)
-          console.log(displayName + " is undefined");
-        if (roomId === undefined) console.log(roomId + " is undefined");
-        if (socket === undefined) console.log(socket + " is undefined");
-        if (index === undefined) console.log(index + " is undefined");
-
         checkReconnect(displayName, roomId, socket, index);
       }, 6000);
     }
