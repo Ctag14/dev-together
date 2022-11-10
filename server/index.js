@@ -28,11 +28,8 @@ function findUser(displayName, roomId) {
     }
   }
 }
-function checkReconnect(displayName, roomId, socket) {
+function checkReconnect(displayName, roomId, socket, index) {
   if (manifest[roomId] === undefined) return;
-
-  let index = findUser(displayName, roomId);
-
   if (manifest[roomId][index].disconnected === false) return;
 
   manifest[roomId].splice(index, 1);
@@ -98,10 +95,12 @@ io.on("connection", (socket) => {
     let roomId = socket.room;
     let index = findUser(displayName, roomId);
     if (index === undefined) return;
-    manifest[roomId][index].disconnected = true;
+    else {
+      manifest[roomId][index].disconnected = true;
 
-    setTimeout(() => {
-      checkReconnect(displayName, roomId, socket);
-    }, 11000);
+      setTimeout(() => {
+        checkReconnect(displayName, roomId, socket, index);
+      }, 4000);
+    }
   });
 });
