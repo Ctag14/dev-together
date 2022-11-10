@@ -75,9 +75,9 @@ io.on("connection", (socket) => {
     io.in(roomId).emit("update_connected", listConnected);
   });
   socket.on("rejoin", (displayName, roomId) => {
+    if (roomId || displayName === "") return;
     console.log(displayName + " attempt to rejoin");
     console.log("rejoining " + roomId);
-    if (roomId || displayName === "") return;
     socket.join(roomId);
     socket.username = displayName;
     socket.room = roomId;
