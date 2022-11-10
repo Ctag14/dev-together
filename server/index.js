@@ -29,7 +29,7 @@ function findUser(displayName, roomId) {
   }
 }
 function checkReconnect(displayName, roomId, socket, index) {
-  if (manifest[roomId] === undefined) return;
+  if (manifest[roomId] === undefined || index === undefined) return;
   if (manifest[roomId][index].disconnected === false) return;
 
   manifest[roomId].splice(index, 1);
@@ -75,6 +75,7 @@ io.on("connection", (socket) => {
     io.in(roomId).emit("update_connected", listConnected);
   });
   socket.on("rejoin", (displayName, roomId) => {
+    console.log(displayName + " attempt to rejoin");
     if (roomId || displayName === "") return;
     socket.join(roomId);
     socket.username = displayName;
