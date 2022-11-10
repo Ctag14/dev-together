@@ -9,6 +9,8 @@ import Editor from "./components/Editor";
 import Participants from "./components/Participants";
 
 const socket = io("https://dev-together.adaptable.app/");
+// const socket = io("http://localhost:3001/");
+
 function App() {
   const [nameProvided, setNameProvided] = useState(false);
   const [messages, setMessages] = useState([]);
@@ -25,26 +27,19 @@ function App() {
       setMessages((list) => [sentMessage, ...list]);
     });
     socket.on("broadcast_code", (value) => {
-      console.log("broadcast");
-
       setCode(value);
     });
     socket.on("update_connected", (listConnected) => {
-      console.log(listConnected);
       setPeople(listConnected);
     });
     socket.on("language_change", (lang) => {
       setLanguage(lang);
-      console.log(language);
     });
     socket.on("user_left", (listConnected, leaveMessage) => {
       setPeople(listConnected);
       setMessages((list) => [leaveMessage, ...list]);
     });
     socket.io.on("reconnect", (attempt) => {
-      console.log(attempt);
-      console.log(displayName.current);
-      console.log(room.current.id);
       socket.emit("rejoin", displayName.current, room.current.id);
     });
     return () => {
@@ -91,13 +86,15 @@ function App() {
   }
 
   async function sendMessage(msgContent) {
+    let date = new Date();
     const sentMessage = {
       user: displayName.current,
       content: msgContent,
-      time:
-        new Date(Date.now()).getHours() +
-        ":" +
-        new Date(Date.now()).getMinutes(),
+      time: date.toLocaleString("en-US", {
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true,
+      }),
     };
     await socket.emit("send_message", sentMessage, room.current.id);
     setMessages((list) => [sentMessage, ...list]);
@@ -120,13 +117,7 @@ function App() {
         />
       ) : (
         <>
-          <Editor
-            updateCode={updateCode}
-            code={code}
-            setCode={setCode}
-            displayName={displayName.current}
-            language={language}
-          />
+          <Editor updateCode={updateCode} code={code} language={language} />
           <Chat
             messages={messages}
             sendMessage={sendMessage}

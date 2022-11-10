@@ -2,8 +2,7 @@ import React from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { sublime } from "@uiw/codemirror-theme-sublime";
 import { loadLanguage } from '@uiw/codemirror-extensions-langs';
-import { cursorTooltip } from "../helpers/cursor.ts";
-const Editor = ({updateCode, code, displayName,language,setCode}) => {
+const Editor = ({updateCode, code,language,}) => {
      
  
     return (
@@ -22,13 +21,7 @@ const Editor = ({updateCode, code, displayName,language,setCode}) => {
             indentOnInput: false,
           }}
           extensions={[loadLanguage(language)]}
-          onChange={(value,viewUpdate,displayName) => {
-            console.log(code);
-            // console.log(displayName);
-            // console.log(viewUpdate.view.dispatch({selection: {anchor: 0}}))
-            // console.log(viewUpdate.state.selection);
-            let pos = viewUpdate.state.selection.ranges[0].from;
-            // viewUpdate.view.dispatch({selection: {anchor: }})
+          onChange={(value) => {
             if(code!== value)
               updateCode(value);
         }}

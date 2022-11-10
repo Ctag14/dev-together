@@ -12,12 +12,15 @@ const io = new Server(server, {
   },
 });
 const PORT = process.env.PORT || 3000;
+// const PORT = 3001;
+
 server.listen(PORT, () => {
   console.log(`server is running on port ${PORT}`);
 });
 
 const manifest = {};
 function findUser(displayName, roomId) {
+  if (manifest[roomId] === undefined) return;
   for (let i = 0; i < manifest[roomId].length; i++) {
     let user = manifest[roomId][i];
     if (user.displayName === displayName) {
@@ -74,6 +77,7 @@ io.on("connection", (socket) => {
     io.in(roomId).emit("update_connected", listConnected);
   });
   socket.on("rejoin", (displayName, roomId) => {
+    if (roomId || displayName === "") return;
     socket.join(roomId);
     socket.username = displayName;
     socket.room = roomId;

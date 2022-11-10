@@ -1,4 +1,5 @@
 import {useState} from 'react'
+import{IoMdSend} from "react-icons/io/"
 
 
 const Chat = ({messages,sendMessage,displayName,roomId}) => {
@@ -11,6 +12,27 @@ const Chat = ({messages,sendMessage,displayName,roomId}) => {
         sendMessage(msgContent);
         
     }
+    function msgId(messages,index){
+        let message = messages[index] 
+        if (message.user !== displayName && message.user!== 'server'){
+            if(messages[index+1] != undefined && message.user !== messages[index+1].user) return true;
+        }
+        return false;
+    }
+    function timestamp (message){
+        if (message.user !== 'server'){
+            return(
+                <div className="message__timestamp"> {message.time}</div>
+            )
+        } 
+    }
+    function firstMsg (messages,index){
+        if (messages[index].user === 'server' )return false;
+        if(messages[index].user != messages[index+1].user)return true;
+        return false; 
+
+    } 
+
     return (
         <div className="chat">
             
@@ -19,16 +41,27 @@ const Chat = ({messages,sendMessage,displayName,roomId}) => {
             <div className="chat__body">
                 {messages.map((message,index)=>{
                     return(
+                    <>   
                         
+
                         <div 
-                            className= {`message ${message.user === 'server'? '-server':''} ${message.user === displayName? '-user':''}`}
+                            className= {`message 
+                                ${message.user === 'server'? '-server':''} 
+                                ${message.user === displayName? '-user':''}`
+                            }
                             key={index}
                         >
-                            <p className="message__content">{message.content}</p>
-                            {message.user !== 'server' && <p className="message__timestamp">{message.user} {message.time}</p>}
+                            {firstMsg(messages,index) && message.user === displayName && <div className="outgoing"/>}
+                            {firstMsg(messages,index) && message.user !== displayName && <div className ="incoming"/>}
+                            {msgId(messages,index) && <div className="message__userLabel">{message.user}</div> }
+                            <span className="message__content">{message.content}</span>
+                            {timestamp(message)}
                         </div>
+                        {firstMsg(messages,index)&&<div className='spacer'></div>}
+                    </> 
                     )
                 })}
+
             </div>
             <form className="chat__form"onSubmit={handleSend}>
                 <input
@@ -42,7 +75,7 @@ const Chat = ({messages,sendMessage,displayName,roomId}) => {
                     required 
                 />
                     
-                <button className="chat__button"type="submit">Send Message</button>
+                <button className="chat__button"type="submit"><IoMdSend/></button>
             </form>
         </div>
       );
