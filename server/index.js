@@ -33,7 +33,7 @@ function checkReconnect(displayName, roomId, socket, index) {
   if (manifest[roomId][index].disconnected === false) return;
 
   manifest[roomId].splice(index, 1);
-
+  displayName + " removed form " + roomId;
   if (manifest[roomId].length > 0) {
     const listConnected = manifest[roomId];
     const leaveMessage = {
@@ -75,14 +75,14 @@ io.on("connection", (socket) => {
     io.in(roomId).emit("update_connected", listConnected);
   });
   socket.on("rejoin", (displayName, roomId) => {
-    console.log(displayName + " attempt to rejoin");
     if (roomId || displayName === "") return;
+    console.log(displayName + " attempt to rejoin");
     socket.join(roomId);
     socket.username = displayName;
     socket.room = roomId;
+    console.log(displayName + " rejoined");
     let index = findUser(displayName, roomId);
     manifest[roomId][index].disconnected = false;
-    console.log(displayName + " rejoined");
   });
   socket.on("send_message", (sentMessage, roomId) => {
     socket.broadcast.to(roomId).emit("recieve_message", sentMessage);
