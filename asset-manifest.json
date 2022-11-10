@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/dev-together/static/css/main.17878914.css",
-    "main.js": "/dev-together/static/js/main.359e9236.js",
+    "main.css": "/dev-together/static/css/main.e437e9fe.css",
+    "main.js": "/dev-together/static/js/main.dc9f6984.js",
     "static/js/379.7cacbdb1.chunk.js": "/dev-together/static/js/379.7cacbdb1.chunk.js",
     "static/js/54.1c997879.chunk.js": "/dev-together/static/js/54.1c997879.chunk.js",
     "static/js/482.cac293a2.chunk.js": "/dev-together/static/js/482.cac293a2.chunk.js",
@@ -11,8 +11,8 @@
     "static/js/997.ca85aeb0.chunk.js": "/dev-together/static/js/997.ca85aeb0.chunk.js",
     "static/js/787.c8cd6546.chunk.js": "/dev-together/static/js/787.c8cd6546.chunk.js",
     "index.html": "/dev-together/index.html",
-    "main.17878914.css.map": "/dev-together/static/css/main.17878914.css.map",
-    "main.359e9236.js.map": "/dev-together/static/js/main.359e9236.js.map",
+    "main.e437e9fe.css.map": "/dev-together/static/css/main.e437e9fe.css.map",
+    "main.dc9f6984.js.map": "/dev-together/static/js/main.dc9f6984.js.map",
     "379.7cacbdb1.chunk.js.map": "/dev-together/static/js/379.7cacbdb1.chunk.js.map",
     "54.1c997879.chunk.js.map": "/dev-together/static/js/54.1c997879.chunk.js.map",
     "482.cac293a2.chunk.js.map": "/dev-together/static/js/482.cac293a2.chunk.js.map",
@@ -23,7 +23,7 @@
     "787.c8cd6546.chunk.js.map": "/dev-together/static/js/787.c8cd6546.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.17878914.css",
-    "static/js/main.359e9236.js"
+    "static/css/main.e437e9fe.css",
+    "static/js/main.dc9f6984.js"
   ]
 }
