@@ -93,11 +93,11 @@ io.on("connection", (socket) => {
   socket.on("change_language", (lang, roomId) => {
     socket.broadcast.to(roomId).emit("language_change", lang);
   });
-  socket.on("disconnect", (reason) => {
-    console.log(reason);
+  socket.on("disconnect", () => {
     let displayName = socket.username;
     let roomId = socket.room;
     let index = findUser(displayName, roomId);
+    console.log(index);
     manifest[roomId][index].disconnected = true;
 
     setTimeout(() => {
