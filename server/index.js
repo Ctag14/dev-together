@@ -98,10 +98,12 @@ io.on("connection", (socket) => {
     let displayName = socket.username;
     let roomId = socket.room;
     let index = findUser(displayName, roomId);
-    manifest[roomId][index].disconnected = true;
+    if (index !== undefined) {
+      manifest[roomId][index].disconnected = true;
 
-    setTimeout(() => {
-      checkReconnect(displayName, roomId, socket);
-    }, 11000);
+      setTimeout(() => {
+        checkReconnect(displayName, roomId, socket);
+      }, 11000);
+    }
   });
 });
