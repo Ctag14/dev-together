@@ -97,7 +97,7 @@ io.on("connection", (socket) => {
     let displayName = socket.username;
     let roomId = socket.room;
     let index = findUser(displayName, roomId);
-    console.log(index);
+    if (index === undefined) return;
     manifest[roomId][index].disconnected = true;
 
     setTimeout(() => {
