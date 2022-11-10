@@ -80,6 +80,7 @@ io.on("connection", (socket) => {
     socket.room = roomId;
     let index = findUser(displayName, roomId);
     manifest[roomId][index].disconnected = false;
+    console.log(displayName + " rejoined");
   });
   socket.on("send_message", (sentMessage, roomId) => {
     socket.broadcast.to(roomId).emit("recieve_message", sentMessage);
@@ -97,10 +98,10 @@ io.on("connection", (socket) => {
     if (index === undefined) return;
     else {
       manifest[roomId][index].disconnected = true;
-
+      console.log(displayName + " disconnected");
       setTimeout(() => {
         checkReconnect(displayName, roomId, socket, index);
-      }, 4000);
+      }, 6000);
     }
   });
 });
