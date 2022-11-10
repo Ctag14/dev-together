@@ -33,6 +33,7 @@ function checkReconnect(displayName, roomId, socket, index) {
   if (manifest[roomId][index].disconnected === false) return;
 
   manifest[roomId].splice(index, 1);
+
   if (manifest[roomId].length > 0) {
     const listConnected = manifest[roomId];
     const leaveMessage = {
@@ -95,8 +96,7 @@ io.on("connection", (socket) => {
     let displayName = socket.username;
     let roomId = socket.room;
     let index = findUser(displayName, roomId);
-    if (index === undefined) return;
-    else {
+    if (index !== undefined) {
       manifest[roomId][index].disconnected = true;
       console.log(displayName + " disconnected");
       setTimeout(() => {
